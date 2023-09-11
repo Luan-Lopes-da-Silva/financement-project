@@ -12,17 +12,17 @@ export default function Home() {
   const [juros,setJuros] = useState('6%')
   const [simul , setSimul] = useState([])
 
-  function createSimulation(ev){
-  ev.preventDefault()
+  function createSimulation(){
   for(let i = 1; i<Number(prazo); i++){
-    const simulation = {
-      parcelas : `Parcela ${i}`,
-      valorParcela : (Number(imovel) - Number(entrada)) / prazo,
+      const simulation = {
+      parcelas:`Parcela ${i}`,
+      valorParcela: (Number(imovel) - Number(entrada)) / prazo,
       juros: '0,48',
       financiado: financiamento,
-    }
+      amortizacao: Number(financiamento) / Number(prazo)
+      }
   simulations.push(simulation)
-  setSimul(state => [simulation,...state])
+  setSimul(state => [...state,simulation])
   }
   }
   
@@ -31,7 +31,7 @@ export default function Home() {
     <main>
       <form 
       className={style.form}
-      onSubmit={(ev)=>createSimulation(ev)}
+      onSubmit={(ev)=>SimulationPDF(ev,simul)}
       >
         <label htmlFor="valorImovel">Valor do imovel</label>
         <input 
@@ -71,9 +71,8 @@ export default function Home() {
         value={juros}
         onChange={(ev)=>setJuros(ev.currentTarget.value)}
         />
-        <button>Simular</button>
+        <button onClick={createSimulation}>Simular</button>
       </form>
-      <button onClick={SimulationPDF(simul)}>Gerar pdf</button>
     </main>
     </>
   )

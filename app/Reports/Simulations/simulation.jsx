@@ -1,7 +1,9 @@
 import pdfMake from 'pdfmake/build/pdfmake'
 import pdfFonts from 'pdfmake/build/vfs_fonts'
 
-export default function SimulationPDF(simulations){
+export default function SimulationPDF(ev,simulations){
+  ev.preventDefault()
+  
   pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
   const reportTitle = [
@@ -15,9 +17,9 @@ export default function SimulationPDF(simulations){
   const datas = simulations.map((simulation)=>{
     return  [
       {text: simulation.parcelas, fontSize:9, alignment:'center'},
-      {text: simulation.valorParcela, fontSize:9 , alignment:'center'},
       {text: simulation.juros, fontSize:9 , alignment:'center'},
-      {text: simulation.financiado, fontSize:9, alignment:'center'},
+      {text: simulation.amortizacao, fontSize:9, alignment:'center'},
+      {text: `R$ ${simulation.valorParcela},48`, fontSize:9 , alignment:'center'},
     ]
   })
   
@@ -25,19 +27,19 @@ export default function SimulationPDF(simulations){
     {
       table:{
         headerRows:1,
-        widths: ['*','*','*','*','*'],
+        widths: ['*','*','*','*'],
         body:[
           [
             {text: 'Parcelas', style: 'tableHeader', fontSize:10},
-            {text: 'Valor parcela', style: 'tableHeader', fontSize:10},
             {text: 'Juros', style: 'tableHeader', fontSize:10},
-            {text: 'Valor financiado', style: 'tableHeader', fontSize:10},
+            {text: 'Amortização', style: 'tableHeader', fontSize:10},
+            {text: 'Valor parcela', style: 'tableHeader', fontSize:10},        
           ],
           [
-            {text: 'Heber', fontSize:9, alignment:'center'},
-            {text: 'Heber', fontSize:9 , alignment:'center'},
-            {text: 'Heber', fontSize:9 , alignment:'center'},
-            {text: 'Heber', fontSize:9, alignment:'center'}
+            {text: 'Parcela 0', fontSize:9, alignment:'center'},
+            {text: '-', fontSize:9 , alignment:'center'},
+            {text: '-', fontSize:9 , alignment:'center'},
+            {text: '-', fontSize:9, alignment:'center'},
           ],
           ...datas
         ]
@@ -73,7 +75,6 @@ export default function SimulationPDF(simulations){
   const docDefinitions = {
     pageSize: 'A4',
     pageMargins: [15,50,15,40],
-
     header: [reportTitle],
     content:[details],
     footer: Rodape
