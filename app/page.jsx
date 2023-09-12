@@ -140,7 +140,14 @@ export default function Home() {
        pdf.addImage(imgData,'PNG',0,0,imgWidth,imgHeight)
        pdf.save('simulation.pdf')
       })
-    
+  }
+
+  function verifyField(){
+  if(prazo!==''){
+    mensageParcela.current.innerText = ''
+  }else{
+    mensageParcela.current.innerText = 'Preencha o numero de parcelas'
+  }
   }
   
   return (
@@ -200,6 +207,7 @@ export default function Home() {
           name="prazoFinanciamento"
           value={prazo}
           onChange={(ev)=>setPrazo(ev.currentTarget.value)}
+          onKeyUp ={verifyField}
           />
         </div>
         <label htmlFor="juros">Taxa juros</label>
