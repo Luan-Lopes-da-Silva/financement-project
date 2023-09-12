@@ -1,7 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import style from './page.module.css'
-import SimulationPDF from './Reports/Simulations/simulation'
+import html2canvas from 'html2canvas'
+import jsPDF from 'jspdf'
 
 export default function Home() {
   const simulations = []
@@ -11,19 +12,68 @@ export default function Home() {
   const [prazo,setPrazo] = useState('')
   const [juros,setJuros] = useState('6%')
   const [simul , setSimul] = useState([])
+  const refParcela = useRef(null)
+  const refJuros = useRef(null)
+  const refAmortizacao = useRef(null)
+  const refValorParcela = useRef(null)
+  const refSaldo = useRef(null)
+  const targetRef = useRef()
 
-  function createSimulation(){
+  function createSimulation(ev){
+    ev.preventDefault()
+    const values = []
+    values.push(Number(financiamento))
   for(let i = 1; i<Number(prazo); i++){
-      const simulation = {
+    values.push((Number(imovel) - Number(entrada)) / prazo)
+      var simulation = {
       parcelas:`Parcela ${i}`,
       valorParcela: (Number(imovel) - Number(entrada)) / prazo,
       juros: '0,48',
       financiado: financiamento,
-      amortizacao: Number(financiamento) / Number(prazo)
+      amortizacao: Number(financiamento) / Number(prazo),
       }
+  
+      const spanParcela = document.createElement('p')
+      spanParcela.innerText = simulation.parcelas
+      refParcela.current.appendChild(spanParcela)
+
+      const spanJuros = document.createElement('p')
+      spanJuros.innerText = simulation.juros
+      refJuros.current.appendChild(spanJuros)
+      
+      const spanAmortizacao = document.createElement('p')
+      spanAmortizacao.innerText = simulation.amortizacao
+      refAmortizacao.current.appendChild(spanAmortizacao)
+
+      const spanValorParcela = document.createElement('p')
+      spanValorParcela.innerText = simulation.valorParcela
+      refValorParcela.current.appendChild(spanValorParcela)
+
+      
+      
+
   simulations.push(simulation)
   setSimul(state => [...state,simulation])
   }
+  const result = values.reduce((acc,cur)=>{
+    const spanSaldo = document.createElement('p')
+    spanSaldo.innerText = `R$ ${acc} - R$ ${cur} = R$ ${acc-cur}`
+    refSaldo.current.appendChild(spanSaldo)
+    return acc-cur
+  })
+  }
+
+  const downloadPDF = () =>{
+    const table = targetRef.current
+    console.log(table)
+    html2canvas(table,{logging:true, letterRendering:1 , useCORS: true}).then(canvas=>{
+     const imgWidth = 208
+     const imgHeight= canvas.height * imgWidth / canvas.width 
+     const imgData = canvas.toDataURL('img/png')
+     const pdf = new jsPDF('p','mm','a4')
+     pdf.addImage(imgData,'PNG',0,0,imgWidth,imgHeight)
+     pdf.save('simulation.pdf')
+    })
   }
   
   return (
@@ -31,7 +81,7 @@ export default function Home() {
     <main>
       <form 
       className={style.form}
-      onSubmit={(ev)=>SimulationPDF(ev,simul)}
+      onSubmit={(ev)=>createSimulation(ev)}
       >
         <label htmlFor="valorImovel">Valor do imovel</label>
         <input 
@@ -71,8 +121,27 @@ export default function Home() {
         value={juros}
         onChange={(ev)=>setJuros(ev.currentTarget.value)}
         />
-        <button onClick={createSimulation}>Simular</button>
+        <button>Simular</button>
+       
       </form>
+    <table ref={targetRef}>
+  <tr>
+    <th style={{color:'red'}}>Parcelas</th>
+    <th style={{color:'red'}}>Juros</th>
+    <th style={{color:'red'}}>Amortização</th>
+    <th style={{color:'red'}}>Valor Parcela</th>
+    <th style={{color:'red'}}>Saldo devedor</th>
+  </tr>
+  <tr>
+    <td style={{color:'red'}} ref={refParcela}></td>
+    <td style={{color:'red'}} ref={refJuros}></td>
+    <td style={{color:'red'}} ref={refAmortizacao}></td>
+    <td style={{color:'red'}} ref={refValorParcela}></td>
+    <td style={{color:'red'}} ref={refSaldo}></td>
+  </tr>
+
+</table>
+<button onClick={downloadPDF}>Gerar PDF</button> 
     </main>
     </>
   )

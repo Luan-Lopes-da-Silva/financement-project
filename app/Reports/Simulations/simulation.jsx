@@ -14,6 +14,9 @@ export default function SimulationPDF(ev,simulations){
       margin: [15,20,0,45] //left, top, right, bottom
     }
   ]
+  
+ 
+
   const datas = simulations.map((simulation)=>{
     return  [
       {text: simulation.parcelas, fontSize:9, alignment:'center'},
@@ -21,7 +24,10 @@ export default function SimulationPDF(ev,simulations){
       {text: simulation.amortizacao, fontSize:9, alignment:'center'},
       {text: `R$ ${simulation.valorParcela},48`, fontSize:9 , alignment:'center'},
     ]
+   
   })
+
+
   
   const details = [
     {
@@ -33,7 +39,7 @@ export default function SimulationPDF(ev,simulations){
             {text: 'Parcelas', style: 'tableHeader', fontSize:10},
             {text: 'Juros', style: 'tableHeader', fontSize:10},
             {text: 'Amortização', style: 'tableHeader', fontSize:10},
-            {text: 'Valor parcela', style: 'tableHeader', fontSize:10},        
+            {text: 'Valor parcela', style: 'tableHeader', fontSize:10},    
           ],
           [
             {text: 'Parcela 0', fontSize:9, alignment:'center'},
@@ -41,7 +47,8 @@ export default function SimulationPDF(ev,simulations){
             {text: '-', fontSize:9 , alignment:'center'},
             {text: '-', fontSize:9, alignment:'center'},
           ],
-          ...datas
+          ...datas,
+        
         ]
       },
       layout: {
