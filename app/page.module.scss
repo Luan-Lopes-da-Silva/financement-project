@@ -16,9 +16,8 @@
 
 .container{
   background-color:#1B1B1B;
-  width: 100%;
-  height: 100vh;
   padding-bottom: 20px;
+  height: 100%;
   header{
     display: flex;
     padding: 20px;
@@ -132,27 +131,46 @@
 
   @media(max-width:500px){
     .container{
-      height: 100%;
-      .tableContainer{
-        margin-left: -20px;
-        font-size: 1rem;
-        .table{
-        margin-top: 60px;
+      header{
+        h1{
+          font-size: 2rem;
         }
-        button{
-          right: 992px;
-          top: -60px;
-          font-family: 'Montserrat';
-          
-          &::after{
-            content: 'Baixar PDF';
-            display: inline-block;
-            width: 300px;
-            height:20px ;
-            margin-bottom: 20px;
+        nav{
+          ul{
+            li{
+              font-size: 1rem;
+            }
+          }
         }
       }
-    }
+      .main{
+        .form{
+          input{
+            width: 200px;
+          }
+        }
+        .tableContainer{
+          margin-left: -20px;
+          font-size: 1rem;
+          .table{
+          margin-top: 60px;
+          }
+          button{
+            right: 992px;
+            top: -60px;
+            font-family: 'Montserrat';
+            
+            &::after{
+              content: 'Baixar PDF';
+              display: inline-block;
+              width: 300px;
+              height:20px ;
+              margin-bottom: 20px;
+          }
+        }
+      }
+      }
+      
   }
 }
 
