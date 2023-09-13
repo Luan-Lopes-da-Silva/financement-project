@@ -16,8 +16,8 @@
 
 .container{
   background-color:#1B1B1B;
-  padding-bottom: 20px;
-  height: 100%;
+  padding-bottom: 40px;
+  height: max-content;
   header{
     display: flex;
     padding: 20px;
@@ -55,7 +55,7 @@
         color: #d90429;
         font-family: 'Montserrat';
       }
-      input{
+      input,select{
         display: block;
         margin: 4px 0px 20px 0px ;
         width: 300px;
@@ -64,7 +64,7 @@
         border-radius: 8px;
         border: 2px solid #3D3D3D;
         outline: none;
-
+        color: #FFFFFF;
         &:focus{
           color: #FFFFFF;
           border-color: #FFFFFF;
@@ -96,6 +96,7 @@
     width: max-content;
     font-size: 1.5rem;
     color: #FFFFFF;
+   
     .table{
       width: 1200px;
       background-color: #363636;
@@ -116,7 +117,18 @@
         }
       } 
       }
-      button{
+      .btnPdf{
+        position: absolute;
+        top: 12px;
+        right: 60px;
+        background-color: transparent;
+        border: none;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+
+      .btnClear{
         position: absolute;
         top: 12px;
         right: 10px;
@@ -124,7 +136,7 @@
         border: none;
         &:hover{
           cursor: pointer;
-        }
+        }  
       }
     }
   }
@@ -170,6 +182,7 @@
               margin-bottom: 20px;
           }
         }
+       
       }
       }
       
