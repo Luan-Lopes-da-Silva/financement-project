@@ -270,6 +270,7 @@ function maxPrazos(ev){
     setPrazo('')
     setBanco('Selecione um banco')
     setJuros('')
+    setAniversario('')
   }
 
   function createSimulation(ev){
