@@ -252,6 +252,7 @@ function maxPrazos(ev){
     setPrazo('')
     setBanco('Selecione um banco')
     setJuros('')
+    setAniversario('')
   }
   
   }
@@ -396,6 +397,7 @@ function maxPrazos(ev){
         setPrazo('')
         setBanco('Selecione um banco')
         setJuros('')
+        setAniversario('')
         btnRef.current.style.display='none'
         btnAtualizar.current.style.display = 'block'
     } 
