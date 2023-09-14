@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas'
 import jsPDF from 'jspdf'
 import style from './page.module.scss'
 import pdfSvg from './src/assets/pdf-svgrepo-com.svg'
-import clear from './src/assets/clear.svg'
+import autoTable from 'jspdf-autotable'
 import Image from 'next/image'
 
 export default function Home() {
@@ -406,16 +406,28 @@ function maxPrazos(ev){
   }
 
   const downloadPDF = () =>{
-      const table = targetRef.current
-      html2canvas(table,{logging:true, letterRendering:1 , useCORS: true}).then(canvas=>{
-       const imgWidth = 208
-       const imgHeight= canvas.height * imgWidth / canvas.width 
-       const imgData = canvas.toDataURL('img/png')
-       const pdf = new jsPDF('p','mm','a4')
-       pdf.addImage(imgData,'PNG',0,0,imgWidth,imgHeight)
-       pdf.save('simulation.pdf')
-      })
-  }
+    const table = targetRef.current;
+    html2canvas(table, { logging: true, letterRendering: 1, useCORS: true, }).then(function (canvas) {
+      const imgData = canvas.toDataURL('image/png');
+      const imgWidth = 180;
+      const pageHeight = 297;
+    
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 5;
+      const pdf = new jsPDF('p', 'mm');
+    
+      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+      pdf.save('simulation.pdf');
+    });}; 
   
   return (
     <div className={style.container}>
