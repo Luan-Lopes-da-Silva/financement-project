@@ -74,7 +74,11 @@
       color: #FFFFFF;
       font-family: 'Helvetica';
     }
-    button{
+   
+    }
+  }
+
+  .btn1,.btn2,.btn3{
     padding: 8px 48px;
     border-radius: 8px;
     background-color: #222222;
@@ -83,12 +87,21 @@
     border: 2px solid #363636;
     margin-bottom: 20px;
     font-family: 'Montserrat';
+    margin-right: 12px;
     &:hover{
     cursor: pointer;
     }
     }
+
+    .btn3{
+    display: none;
     }
-  }
+
+    .btn2{
+    position: absolute;
+    margin-top: -56px;
+    margin-left: 180px;
+    }
   .tableContainer{
     font-family: 'Collegiate';
     display: none;
