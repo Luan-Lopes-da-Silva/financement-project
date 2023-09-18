@@ -70,7 +70,7 @@ function maxPrazos(ev){
     mensageParcela.current.innerText = 'Numero minimo de parcelas 12'
   }
   else if(banco === 'bradesco' && ev.currentTarget.value>420){
-   mensageParcela.current.innerText = 'Limite de parcelas para esse banco ja foi atingida'
+   mensageParcela.current.innerText = 'Numero maximo de parcelas 420'
   }else{
    mensageParcela.current.innerText = ''
   }
@@ -108,7 +108,6 @@ function maxPrazos(ev){
   mensageBanco.current.innerText = ''
   }
   else if(target.value === 'bradesco'){
-    setPrazo(420)
     setJuros('6%')
     mensageParcela.current.innerText = ''
     mensageJuros.current.innerText = ''
@@ -241,18 +240,10 @@ function maxPrazos(ev){
 }
     const result = values.reduce((acc,cur)=>{
     const spanSaldo = document.createElement('p')
-    spanSaldo.innerText = `R$ ${acc.toFixed(2)} - R$ ${cur.toFixed(2)} = R$ ${(acc-cur).toFixed(2)}`
+    spanSaldo.innerText = `R$ ${(acc-cur).toFixed(2)}`
     appendChildOnce(refSaldo.current,spanSaldo)
     return acc-cur
     })
-
-    setImovel('')
-    setFinanciamento('')
-    setEntrada('')
-    setPrazo('')
-    setBanco('Selecione um banco')
-    setJuros('')
-    setAniversario('')
   }
   
   }
@@ -387,24 +378,16 @@ function maxPrazos(ev){
     }
         const result = values.reduce((acc,cur)=>{
         const spanSaldo = document.createElement('p')
-        spanSaldo.innerText = `R$ ${acc.toFixed(2)} - R$ ${cur.toFixed(2)} = R$ ${(acc-cur).toFixed(2)}`
+        spanSaldo.innerText = `R$ ${(acc-cur).toFixed(2)}`
         appendChildOnce(refSaldo.current,spanSaldo)
         return acc-cur
         })
-
-        setImovel('')
-        setFinanciamento('')
-        setEntrada('')
-        setPrazo('')
-        setBanco('Selecione um banco')
-        setJuros('')
-        setAniversario('')
         btnRef.current.style.display='none'
         btnAtualizar.current.style.display = 'block'
     } 
     
   }
-
+ 
   const downloadPDF = () =>{
     const table = targetRef.current;
     html2canvas(table, { logging: true, letterRendering: 1, useCORS: true, }).then(function (canvas) {
@@ -540,7 +523,7 @@ function maxPrazos(ev){
         className={style.btn3}
         onClick={clearTable}
         >
-          Atualizar
+          Simular
         </button>
   <div 
   className={style.tableContainer}
