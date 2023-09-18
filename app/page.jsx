@@ -65,12 +65,19 @@ export default function Home() {
 
 function maxPrazos(ev){
   const target = ev.currentTarget
+  const nascimentoConvertido = new Date(aniversario).getFullYear()
+  const anoAtual = new Date().getFullYear()
+  const conta = (anoAtual-nascimentoConvertido) + Number(ev.currentTarget.value)/12
+  
   setPrazo(target.value)
   if(Number(ev.currentTarget.value)<12){
     mensageParcela.current.innerText = 'Numero minimo de parcelas 12'
   }
   else if(banco === 'bradesco' && ev.currentTarget.value>420){
    mensageParcela.current.innerText = 'Numero maximo de parcelas 420'
+  }else if(banco === 'bradesco' && conta>80){
+  const sobra = (conta-80)*12 
+  mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
   }else{
    mensageParcela.current.innerText = ''
   }
@@ -123,6 +130,7 @@ function maxPrazos(ev){
     const porcentagem = (financiamento/imovel) * 100 
     const nascimento = new Date(aniversario).getFullYear()
     const anoAtual = new Date().getFullYear()
+    const conta = (anoAtual-nascimento) + Number(prazo)/12
 
     if(banco === 'Selecione um banco'){
       mensageBanco.current.innerText = 'Selecione um banco valido para dar continuidade'
@@ -168,6 +176,9 @@ function maxPrazos(ev){
     mensageJuros.current.innerText = 'Preencha a taxa de juros de acordo com o seu banco.'
   }else if(Number(prazo)<12){
     mensageParcela.current.innerText = 'Numero de parcelas mininimas é 12.'
+  }else if(banco === 'bradesco' && conta>80){
+    const sobra = (conta-80)*12 
+    mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
   }else{
     while(refJuros.current.hasChildNodes()){
       refJuros.current.removeChild(refJuros.current.firstChild)
@@ -268,7 +279,7 @@ function maxPrazos(ev){
     ev.preventDefault()
     const nascimento = new Date(aniversario).getFullYear()
     const anoAtual = new Date().getFullYear()
-    
+    const conta = (anoAtual-nascimento) + Number(prazo)/12
     const valorEntrada = (imovel*20) /100
     const porcentagem = (financiamento/imovel) * 100
     if(banco === 'Selecione um banco'){
@@ -315,6 +326,9 @@ function maxPrazos(ev){
       mensageJuros.current.innerText = 'Preencha a taxa de juros de acordo com o seu banco.'
     }else if(Number(prazo)<12){
       mensageParcela.current.innerText = 'Numero de parcelas mininimas é 12.'
+    }else if(banco === 'bradesco' && conta>80){
+      const sobra = (conta-80)*12 
+      mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
     }else{
       btnLimpar.current.style.marginTop = '0px'
       btnLimpar.current.style.marginLeft = '200px'
