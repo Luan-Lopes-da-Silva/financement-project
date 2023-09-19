@@ -569,6 +569,28 @@ function maxPrazos(ev){
         >
           Simular
         </button>
+
+        <div className={style.summary} ref={refResumo}>
+      <h1>Resumo do financiamento</h1>
+      <h4>Valor Imovel: R$ {imovel}</h4>
+      <h4>Valor Financiamento: R$ {financiamento}</h4>
+      <h4>Valor Entrada: R$ {entrada}</h4>
+      <h4>Renda Minima: (NÃO INFORMADO)</h4>
+      <h4>Despesas: (NÃO INFORMADO)</h4>
+      {banco === 'bradesco'?(
+       <h4>Vistoria: R$ 2.114,03</h4>
+      ):(
+       <h4>Vistoria: R$ 0,00</h4>
+      )}
+      <h4>Valor Total Financiado: (NÃO INFORMADO)</h4>
+      <h4>Prazo: {prazo}</h4>
+      <h4>Primeira Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
+      <h4>Ultima Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
+      <h4>Valor CET: (NÃO INFORMADO)</h4>
+      <h4>Valor CESH: (NÃO INFORMADO)</h4>
+      <h4>Taxa Efetiva: {juros}</h4>
+      <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
+    </div>
   <div 
   className={style.tableContainer}
   ref={refTable}
@@ -602,27 +624,7 @@ function maxPrazos(ev){
     </button> 
     </div>
 
-    <div className={style.summary} ref={refResumo}>
-      <h1>Resumo do financiamento</h1>
-      <h4>Valor Imovel: R$ {imovel}</h4>
-      <h4>Valor Financiamento: R$ {financiamento}</h4>
-      <h4>Valor Entrada: R$ {entrada}</h4>
-      <h4>Renda Minima: (NÃO INFORMADO)</h4>
-      <h4>Despesas: (NÃO INFORMADO)</h4>
-      {banco === 'bradesco'?(
-       <h4>Vistoria: R$ 2.114,03</h4>
-      ):(
-       <h4>Vistoria: R$ 0,00</h4>
-      )}
-      <h4>Valor Total Financiado: (NÃO INFORMADO)</h4>
-      <h4>Prazo: {prazo}</h4>
-      <h4>Primeira Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
-      <h4>Ultima Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
-      <h4>Valor CET: (NÃO INFORMADO)</h4>
-      <h4>Valor CESH: (NÃO INFORMADO)</h4>
-      <h4>Taxa Efetiva: {juros}</h4>
-      <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
-    </div>
+   
     </main>
     </div>
   )
