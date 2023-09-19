@@ -55,7 +55,7 @@
         color: #d90429;
         font-family: 'Montserrat';
       }
-      input,select{
+      input[type = text],select,input[type = date]{
         display: block;
         margin: 4px 0px 20px 0px ;
         width: 300px;
@@ -74,14 +74,26 @@
       color: #FFFFFF;
       font-family: 'Helvetica';
     }
-   
+    .radioContainer{
+      display: flex;
+      margin-bottom: 20px;
+      .radio{
+        margin-top: 12px;
+        margin-right: 12px;
+        width: max-content;
+        input{
+          display: block;
+          margin: auto auto;
+        }
+      }
+    }
     }
 
     .summary{
     display: none;
     background-color: #FFF; 
     width: max-content;
-    padding: 20px;
+    padding: 60px;
     border: 2px solid #000; 
     margin-bottom: 12px;
     h1{
@@ -152,8 +164,8 @@
       }
       .btnPdf{
         position: absolute;
-        top: 12px;
-        right: 35px;
+        top: -58px;
+        left: 442px;
         background-color: transparent;
         border: none;
         &:hover{

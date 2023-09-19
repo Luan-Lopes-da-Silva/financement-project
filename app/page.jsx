@@ -10,7 +10,8 @@ import Image from 'next/image'
 export default function Home() {
   const simulations = []
   const [imovel,setImovel] = useState('')
-  const [amortizacao,setAmortizacao] = useState('')
+  const [despesas,setDespesas] = useState('')
+  const [amortizacao,setAmortizacao] = useState('Selecione seu sistema de amortização')
   const [aniversario,setAniversario] = useState('')
   const [banco,setBanco] = useState('Selecione um banco')
   const [financiamento,setFinanciamento] = useState('')
@@ -36,6 +37,7 @@ export default function Home() {
   const btnLimpar = useRef()
   const mensageAniversario = useRef()
   const mensageAmortizacao = useRef()
+  const mensageDespesa = useRef()
 
   function checkIdade(ev){
     const nascimento = ev.currentTarget.value
@@ -61,6 +63,15 @@ export default function Home() {
     span.innerText = `Valor minimo de entrada R$ ${valorEntrada},00`
   }else{
     span.innerText = ''
+  }
+ }
+
+ function checkSistema(ev){
+  setAmortizacao(ev.currentTarget.value)
+  if(ev.currentTarget.value === 'Selecione seu sistema de amortização'){
+  mensageAmortizacao.current.innerText = 'Selecione um sistema'
+  }else{
+  mensageAmortizacao.current.innerText = ''
   }
  }
 
@@ -181,8 +192,10 @@ function maxPrazos(ev){
   }else if(banco === 'bradesco' && conta>80){
     const sobra = (conta-80)*12 
     mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
-  }else if(amortizacao === ''){
-    mensageAmortizacao.current.innerText = 'Escolha um sistema de amortização'
+  }else if(amortizacao === 'Selecione seu sistema de amortização'){
+    mensageAmortizacao.current.innerText = 'Selecione um sistema '
+  }else if(despesas === ''){
+    mensageDespesa.current.innerText = 'Selecione uma alternativa'
   }else{
     while(refJuros.current.hasChildNodes()){
       refJuros.current.removeChild(refJuros.current.firstChild)
@@ -202,7 +215,7 @@ function maxPrazos(ev){
     mensageJuros.current.innerText = ''
     mensageAniversario.current.innerText = ''
     mensageAmortizacao.current.innerText = ''
-
+    mensageDespesa.current.innerText = ''
   const values = []
   values.push(Number(financiamento))
   const parcela0Span = document.createElement('p')
@@ -279,6 +292,9 @@ function maxPrazos(ev){
     setJuros('')
     setAniversario('')
     setAmortizacao('Selecione seu sistema de amortização')
+    setDespesas('')
+    refTable.current.style.display = 'none'
+    refResumo.current.style.display = 'none'
   }
 
   function createSimulation(ev){
@@ -335,10 +351,11 @@ function maxPrazos(ev){
     }else if(banco === 'bradesco' && conta>80){
       const sobra = (conta-80)*12 
       mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
-    }else if(amortizacao === ''){
-      mensageAmortizacao.current.innerText = 'Escolha um sistema de amortização'
+    }else if(amortizacao === 'Selecione seu sistema de amortização'){
+      mensageAmortizacao.current.innerText = 'Selecione um sistema '
+    }else if(despesas === ''){
+      mensageDespesa.current.innerText = 'Selecione uma alternativa'
     }else{
-      const pergunta = window.prompt('Deseja incluir despesas?')
       btnLimpar.current.style.marginTop = '0px'
       btnLimpar.current.style.marginLeft = '200px'
       refResumo.current.style.display = 'block'
@@ -350,6 +367,7 @@ function maxPrazos(ev){
       mensageAniversario.current.innerText = ''
       mensageJuros.current.innerText = ''
       mensageAmortizacao.current.innerText = ''
+      mensageDespesa.current.innerText = ''
       const values = []
       values.push(Number(financiamento))
       const parcela0Span = document.createElement('p')
@@ -409,11 +427,6 @@ function maxPrazos(ev){
         })
         btnRef.current.style.display='none'
         btnAtualizar.current.style.display = 'block'
-        if(pergunta === 'Sim' || pergunta === 'sim' || pergunta === 'yes' || pergunta === 'Yes'){
-        alert('Incluir despesas')
-        }else{
-        alert('Não incluir despesas')
-        }
     } 
   
     
@@ -533,9 +546,9 @@ function maxPrazos(ev){
           <span className={style.errorSpan} ref={mensageAmortizacao}></span>
           <select
           value={amortizacao}
-          onChange={(ev)=>setAmortizacao(ev.currentTarget.value)}
+          onChange={(ev)=>checkSistema(ev)}
           >
-            <option value="">Selecione seu sistema de amortização</option>
+            <option value="Selecione seu sistema de amortização" selected>Selecione seu sistema de amortização</option>
             <option value="SAC">SAC</option>
             <option value="PRICE">PRICE</option>
           </select>
@@ -548,11 +561,34 @@ function maxPrazos(ev){
         value={juros}
         onChange={(ev)=>setJuros(ev.currentTarget.value)}
         />
+        <label htmlFor="despesas">Incluir despesas?</label>
+        <span className={style.errorSpan} ref={mensageDespesa}></span>
+        <div className={style.radioContainer}>
+          <div className={style.radio}>
+            <label htmlFor="sim">Sim</label>
+            <input
+            type="radio"
+            name="despesas"
+            checked={despesas === 'Sim'}
+            value={'Sim'}
+            onChange={()=>setDespesas('Sim')}
+            />
+          </div>
+          <div className={style.radio}>
+            <label htmlFor="nao">Não</label>
+            <input
+            type="radio"
+            name="despesas"
+            checked={despesas === 'Não'}
+            value={'Não'}
+            onChange={()=>setDespesas('Não')}
+            />
+          </div>
+        </div>
         <button
         ref={btnRef}
         className={style.btn1}
         >Simular</button>
-       
       </form>
       <button
         onClick={limparCampos}
