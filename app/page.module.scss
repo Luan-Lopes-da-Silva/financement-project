@@ -76,6 +76,25 @@
     }
    
     }
+
+    .summary{
+    display: none;
+    background-color: #FFF; 
+    width: max-content;
+    padding: 20px;
+    border: 2px solid #000; 
+    h1{
+      margin-bottom: 12px;
+     
+    }
+    h4{
+      padding: 4px;
+      border: 2px solid #F9F9F9;
+    }
+    h4:nth-child(odd){
+    background-color: #F9F9F9;
+    
+    }
   }
 
   .btn1,.btn2,.btn3{
@@ -201,4 +220,4 @@
       
   }
 }
-
+}
