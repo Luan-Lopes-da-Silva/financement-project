@@ -11,7 +11,6 @@ import SimulationsPDF from './Reports/Simulations/Simulations'
 export default function Home() {
   const simulations = []
   const saldoDevedor  = []
-  let index = 0
   const [imovel,setImovel] = useState('')
   const [despesas,setDespesas] = useState('')
   const [amortizacao,setAmortizacao] = useState('Selecione seu sistema de amortização')
@@ -21,27 +20,21 @@ export default function Home() {
   const [entrada,setEntrada] = useState('')
   const [prazo,setPrazo] = useState('')
   const [juros,setJuros] = useState('')
-  const refParcela = useRef(null)
-  const refJuros = useRef(null)
-  const refAmortizacao = useRef(null)
-  const refValorParcela = useRef(null)
-  const refSaldo = useRef(null)
   const refResumo = useRef(null)
-  const targetRef = useRef()
   const mensage = useRef()
   const mensagePorcentagemFinanciamento = useRef()
   const mensageEntrada = useRef()
   const mensageParcela = useRef()
   const mensageBanco = useRef()
   const mensageJuros = useRef()
-  const refTable = useRef()
   const btnRef = useRef()
-  const btnAtualizar = useRef()
   const btnLimpar = useRef()
   const mensageAniversario = useRef()
   const mensageAmortizacao = useRef()
   const mensageDespesa = useRef()
   const formRef = useRef()
+  const taxano = useRef()
+  const taxmes = useRef()
 
   function checkIdade(ev){
     const nascimento = ev.currentTarget.value
@@ -87,7 +80,7 @@ function maxPrazos(ev){
   const conta = (anoAtual-nascimentoConvertido) + Number(ev.currentTarget.value)/12
   
   setPrazo(target.value)
-  if(Number(ev.currentTarget.value)<12){
+  if(Number(ev.currentTarget.value)<3){
     mensageParcela.current.innerText = 'Numero minimo de parcelas 12'
   }
   else if(banco === 'bradesco' && ev.currentTarget.value>420){
@@ -102,7 +95,7 @@ function maxPrazos(ev){
 
   function minValues(ev){
     const valorEntrada = (ev.currentTarget.value*20) /100
-    if(ev.currentTarget.value < 40000){
+    if(ev.currentTarget.value < 50){
       mensage.current.innerText = 'Valor minimo de imovel R$ 40,000'
     }else{
       mensage.current.innerText = ''
@@ -132,7 +125,7 @@ function maxPrazos(ev){
   mensageBanco.current.innerText = ''
   }
   else if(target.value === 'bradesco'){
-    setJuros('6%')
+    setJuros('12%')
     mensageParcela.current.innerText = ''
     mensageJuros.current.innerText = ''
     mensageBanco.current.innerText = ''
@@ -141,9 +134,6 @@ function maxPrazos(ev){
     console.log('Outro banco')
   }
   }
-
-
-  
 
   function limparCampos(){
     setImovel('')
@@ -160,6 +150,10 @@ function maxPrazos(ev){
 
   function createSimulation(ev){
     ev.preventDefault()
+    const jurosConvertido = juros.replace(/%/g,'')
+    const taxaConta = 1/12
+    const contaTaxa = Number(((jurosConvertido/100)+1)**taxaConta)-1
+ 
     const nascimento = new Date(aniversario).getFullYear()
     const anoAtual = new Date().getFullYear()
     const conta = (anoAtual-nascimento) + Number(prazo)/12
@@ -207,7 +201,7 @@ function maxPrazos(ev){
       mensageEntrada.current.innerText = `Valor minimo de entrada R$ ${valorEntrada},00`
     }else if(juros === ''){
       mensageJuros.current.innerText = 'Preencha a taxa de juros de acordo com o seu banco.'
-    }else if(Number(prazo)<12){
+    }else if(Number(prazo)<3){
       mensageParcela.current.innerText = 'Numero de parcelas mininimas é 12.'
     }else if(banco === 'bradesco' && conta>80){
       const sobra = (conta-80)*12 
@@ -216,7 +210,11 @@ function maxPrazos(ev){
       mensageAmortizacao.current.innerText = 'Selecione um sistema '
     }else if(despesas === ''){
       mensageDespesa.current.innerText = 'Selecione uma alternativa'
-    }else{
+    }else if(amortizacao === 'SAC' && banco === 'Bradesco'){
+      const taxaBradesco = '10.49%'
+      
+      taxano.current.innerText = `Taxa juros ano ${juros}`
+      taxmes.current.innerText = `Taxa juros mes `
       btnLimpar.current.style.marginTop = '-56px'
       btnLimpar.current.style.marginLeft = '200px'
       refResumo.current.style.display = 'block'
@@ -231,7 +229,7 @@ function maxPrazos(ev){
       const values = []
       values.push(Number(financiamento))
       
-      
+    
       for(let i = 1; i<=Number(prazo); i++){
         values.push((Number(imovel) - Number(entrada)) / prazo)
       }
@@ -242,12 +240,15 @@ function maxPrazos(ev){
       })
 
       const amort = Number(financiamento) / Number(prazo)
-      const parc = (Number(imovel) - Number(entrada)) / prazo
+   
+  
       for(let i = 1; i<=Number(prazo); i++){
+        const parcela = (((5-[i]+1)*contaTaxa)+1)*amort
+        console.log()
         var simulation = {
         parcelas:`Parcela ${i}`,
-        valorParcela: parc.toFixed(2),
-        juros: '0,48',
+        valorParcela: parcela.toFixed(2),
+        juros: (parcela-amort).toFixed(2),
         financiado: financiamento,
         amortizacao: amort.toFixed(2),
         saldoDevedor: saldoDevedor[i-1]
@@ -401,14 +402,10 @@ function maxPrazos(ev){
         ref={btnLimpar}
         >
           Limpar
-        </button>
+      </button>
 
-        <button
-        ref={btnAtualizar}
-        className={style.btn3}
-        >
-          Simular
-        </button>
+      <h4 ref={taxano}></h4>
+      <h4 ref = {taxmes}></h4>
 
       <div className={style.summary} ref={refResumo}>
       <h1>Resumo do financiamento</h1>
