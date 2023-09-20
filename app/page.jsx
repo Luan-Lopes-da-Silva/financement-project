@@ -6,9 +6,12 @@ import style from './page.module.scss'
 import pdfSvg from './src/assets/pdf-svgrepo-com.svg'
 import autoTable from 'jspdf-autotable'
 import Image from 'next/image'
+import SimulationsPDF from './Reports/Simulations/Simulations'
 
 export default function Home() {
   const simulations = []
+  const saldoDevedor  = []
+  let index = 0
   const [imovel,setImovel] = useState('')
   const [despesas,setDespesas] = useState('')
   const [amortizacao,setAmortizacao] = useState('Selecione seu sistema de amortização')
@@ -38,6 +41,7 @@ export default function Home() {
   const mensageAniversario = useRef()
   const mensageAmortizacao = useRef()
   const mensageDespesa = useRef()
+  const formRef = useRef()
 
   function checkIdade(ev){
     const nascimento = ev.currentTarget.value
@@ -138,150 +142,8 @@ function maxPrazos(ev){
   }
   }
 
-  function clearTable(){
-    const valorEntrada = (imovel*20) /100
-    const porcentagem = (financiamento/imovel) * 100 
-    const nascimento = new Date(aniversario).getFullYear()
-    const anoAtual = new Date().getFullYear()
-    const conta = (anoAtual-nascimento) + Number(prazo)/12
 
-    if(banco === 'Selecione um banco'){
-      mensageBanco.current.innerText = 'Selecione um banco valido para dar continuidade'
-      mensageJuros.current.innerText = 'Preencha a taxa de juros'
-    } 
-    else if(aniversario === ''){
-      mensageAniversario.current.innerText = 'Preencha com sua data de nascimento para dar continuidade.'
-    }else if(anoAtual-nascimento>80){
-      mensageAniversario.current.innerText = 'Idade acima do permitido para financiamento.'
-    }else if(anoAtual-nascimento<18){
-      mensageAniversario.current.innerText = 'Idade abaixo do permitido para financiamento.'
-    }
-    else if(financiamento === '' && imovel === ''){
-    mensage.current.innerText = 'Preencha o valor do imovel'
-    mensagePorcentagemFinanciamento.current.innerText = 'Preencha o valor do financiamento'
-    mensageEntrada.current.innerText = 'Preencha o valor de entrada'
-    mensageBanco.current.innerText = ''
-    mensageJuros.current.innerText = ''
-    mensageAniversario.current.innerText = ''
-  }else if(financiamento === 0 && imovel === 0){
-    mensageEntrada.current.innerText = 'Preencha o valor de entrada'
-    mensage.current.innerText = 'Preencha o valor do imovel'
-    mensagePorcentagemFinanciamento.current.innerText = 'Preencha o valor do financiamento'
-    mensageEntrada.current.innerText = 'Preencha o valor de entrada'
-    mensageBanco.current.innerText = ''
-    mensageJuros.current.innerText = ''
-    mensageAniversario.current.innerText = ''
-  }else if(imovel === 0){
-    mensage.current.innerText = 'Preencha o valor do imovel'
-  }else if(financiamento === 0){
-    mensagePorcentagemFinanciamento.current.innerText = 'Preencha o valor do financiamento'
-  }else if(prazo === ''){
-    mensageParcela.current.innerText = 'Preencha o numero de parcelas'
-  }else if(entrada === '') {
-    mensageEntrada.current.innerText = 'Preencha o valor de entrada'
-  }else if(porcentagem>80){
-    mensagePorcentagemFinanciamento.current.innerText = 'Porcentagem máxima de financiamento atingida abaixe o valor'
-  }else if(banco === 'bradesco' && prazo>420){
-    mensageParcela.current.innerText = 'Numero de parcelas acima do limite pra esse banco'
-  }else if(entrada<valorEntrada){
-    mensageEntrada.current.innerText = `Valor minimo de entrada R$ ${valorEntrada},00`
-  }else if(juros === ''){
-    mensageJuros.current.innerText = 'Preencha a taxa de juros de acordo com o seu banco.'
-  }else if(Number(prazo)<12){
-    mensageParcela.current.innerText = 'Numero de parcelas mininimas é 12.'
-  }else if(banco === 'bradesco' && conta>80){
-    const sobra = (conta-80)*12 
-    mensageParcela.current.innerText = `Devido as politicas do banco seu novo limite de parcelas é ${420-sobra.toFixed(0)}`
-  }else if(amortizacao === 'Selecione seu sistema de amortização'){
-    mensageAmortizacao.current.innerText = 'Selecione um sistema '
-  }else if(despesas === ''){
-    mensageDespesa.current.innerText = 'Selecione uma alternativa'
-  }else{
-    while(refJuros.current.hasChildNodes()){
-      refJuros.current.removeChild(refJuros.current.firstChild)
-      refParcela.current.removeChild(refParcela.current.firstChild)
-      refAmortizacao.current.removeChild(refAmortizacao.current.firstChild)
-      refSaldo.current.removeChild(refSaldo.current.firstChild)
-      refValorParcela.current.removeChild(refValorParcela.current.firstChild)
-    }
-
-    btnLimpar.current.style.marginTop = '0px'
-    btnLimpar.current.style.marginLeft = '200px'
-    refTable.current.style.display = 'block'
-    mensagePorcentagemFinanciamento.current.innerText = ''
-    mensageParcela.current.innerText = ''
-    mensageEntrada.current.innerText = ''
-    mensageBanco.current.innerText = ''
-    mensageJuros.current.innerText = ''
-    mensageAniversario.current.innerText = ''
-    mensageAmortizacao.current.innerText = ''
-    mensageDespesa.current.innerText = ''
-  const values = []
-  values.push(Number(financiamento))
-  const parcela0Span = document.createElement('p')
-  parcela0Span.innerText = 'Parcela 0'
-  appendChildOnce(refParcela.current,parcela0Span)
-
-  const parcela0Juros = document.createElement('p')
-  parcela0Juros.innerText = '-'
-  appendChildOnce(refJuros.current,parcela0Juros)
   
-  const parcela0Amortizacao = document.createElement('p')
-  parcela0Amortizacao.innerText = '-'
-  appendChildOnce(refAmortizacao.current,parcela0Amortizacao)
-
-  const parcela0Valor = document.createElement('p')
-  parcela0Valor.innerText = '-'
-  appendChildOnce(refValorParcela.current,parcela0Valor)
-
-
-  const parcela0Saldo = document.createElement('p')
-  parcela0Saldo.innerText = 'R$ 000'
-  appendChildOnce(refSaldo.current,parcela0Saldo)
-  const amort = Number(financiamento) / Number(prazo)
-  const parc = (Number(imovel) - Number(entrada)) / prazo
-  for(let i = 1; i<=Number(prazo); i++){
-    values.push((Number(imovel) - Number(entrada)) / prazo)
-    var simulation = {
-    parcelas:`Parcela ${i}`,
-    valorParcela: parc.toFixed(2),
-    juros: '0,48',
-    financiado: financiamento,
-    amortizacao: amort.toFixed(2),
-    }
-
-    const spanParcela = document.createElement('p')
-    spanParcela.innerText = simulation.parcelas
-    appendChildOnce(refParcela.current,spanParcela)
-
-    const spanJuros = document.createElement('p')
-    spanJuros.innerText = simulation.juros
-    appendChildOnce(refJuros.current,spanJuros)
-    
-    const spanAmortizacao = document.createElement('p')
-    spanAmortizacao.innerText = simulation.amortizacao
-    appendChildOnce(refAmortizacao.current,spanAmortizacao)
-
-    const spanValorParcela = document.createElement('p')
-    spanValorParcela.innerText = simulation.valorParcela
-    appendChildOnce(refValorParcela.current,spanValorParcela)
-    simulations.push(simulation)
-}
-    const result = values.reduce((acc,cur)=>{
-    const spanSaldo = document.createElement('p')
-    spanSaldo.innerText = `R$ ${(acc-cur).toFixed(2)}`
-    appendChildOnce(refSaldo.current,spanSaldo)
-    return acc-cur
-    })
-  }
-  
-  }
-
-  function appendChildOnce(parentElement, childElement){
-    if(!parentElement.contains(childElement)){
-        parentElement.appendChild(childElement)
-    }
-  }
 
   function limparCampos(){
     setImovel('')
@@ -293,7 +155,6 @@ function maxPrazos(ev){
     setAniversario('')
     setAmortizacao('Selecione seu sistema de amortização')
     setDespesas('')
-    refTable.current.style.display = 'none'
     refResumo.current.style.display = 'none'
   }
 
@@ -356,10 +217,9 @@ function maxPrazos(ev){
     }else if(despesas === ''){
       mensageDespesa.current.innerText = 'Selecione uma alternativa'
     }else{
-      btnLimpar.current.style.marginTop = '0px'
+      btnLimpar.current.style.marginTop = '-56px'
       btnLimpar.current.style.marginLeft = '200px'
       refResumo.current.style.display = 'block'
-      refTable.current.style.display = 'block'
       mensagePorcentagemFinanciamento.current.innerText = ''
       mensageParcela.current.innerText = ''
       mensageEntrada.current.innerText = ''
@@ -370,91 +230,34 @@ function maxPrazos(ev){
       mensageDespesa.current.innerText = ''
       const values = []
       values.push(Number(financiamento))
-      const parcela0Span = document.createElement('p')
-      parcela0Span.innerText = 'Parcela 0'
-      appendChildOnce(refParcela.current,parcela0Span)
-
-      const parcela0Juros = document.createElement('p')
-      parcela0Juros.innerText = '-'
-      appendChildOnce(refJuros.current,parcela0Juros)
       
-      const parcela0Amortizacao = document.createElement('p')
-      parcela0Amortizacao.innerText = '-'
-      appendChildOnce(refAmortizacao.current,parcela0Amortizacao)
+      
+      for(let i = 1; i<=Number(prazo); i++){
+        values.push((Number(imovel) - Number(entrada)) / prazo)
+      }
 
-      const parcela0Valor = document.createElement('p')
-      parcela0Valor.innerText = '-'
-      appendChildOnce(refValorParcela.current,parcela0Valor)
-  
+      const result = values.reduce((acc,cur)=>{
+        saldoDevedor.push((acc-cur).toFixed(2))
+        return acc-cur
+      })
 
-      const parcela0Saldo = document.createElement('p')
-      parcela0Saldo.innerText = 'R$ 0,00'
-      appendChildOnce(refSaldo.current,parcela0Saldo)
       const amort = Number(financiamento) / Number(prazo)
       const parc = (Number(imovel) - Number(entrada)) / prazo
       for(let i = 1; i<=Number(prazo); i++){
-        values.push((Number(imovel) - Number(entrada)) / prazo)
         var simulation = {
         parcelas:`Parcela ${i}`,
         valorParcela: parc.toFixed(2),
         juros: '0,48',
         financiado: financiamento,
         amortizacao: amort.toFixed(2),
+        saldoDevedor: saldoDevedor[i-1]
         }
-    
-        const spanParcela = document.createElement('p')
-        spanParcela.innerText = simulation.parcelas
-        appendChildOnce(refParcela.current,spanParcela)
-  
-        const spanJuros = document.createElement('p')
-        spanJuros.innerText = simulation.juros
-        appendChildOnce(refJuros.current,spanJuros)
-        
-        const spanAmortizacao = document.createElement('p')
-        spanAmortizacao.innerText = simulation.amortizacao
-        appendChildOnce(refAmortizacao.current,spanAmortizacao)
-  
-        const spanValorParcela = document.createElement('p')
-        spanValorParcela.innerText = simulation.valorParcela
-        appendChildOnce(refValorParcela.current,spanValorParcela)
-        simulations.push(simulation)
+        simulations.push(simulation)  
     }
-        const result = values.reduce((acc,cur)=>{
-        const spanSaldo = document.createElement('p')
-        spanSaldo.innerText = `R$ ${(acc-cur).toFixed(2)}`
-        appendChildOnce(refSaldo.current,spanSaldo)
-        return acc-cur
-        })
-        btnRef.current.style.display='none'
-        btnAtualizar.current.style.display = 'block'
-    } 
-  
-    
+    formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
+    }
+
   }
- 
-  const downloadPDF = () =>{
-    const table = targetRef.current;
-    html2canvas(table, { logging: true, letterRendering: 1, useCORS: true, }).then(function (canvas) {
-      const imgData = canvas.toDataURL('image/png');
-      const imgWidth = 180;
-      const pageHeight = 297;
-    
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 5;
-      const pdf = new jsPDF('p', 'mm');
-    
-      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      pdf.save('simulation.pdf');
-    });}; 
   
   return (
     <div className={style.container}>
@@ -471,6 +274,7 @@ function maxPrazos(ev){
     <main className={style.main}>
       <form 
       className={style.form}
+      ref={formRef}
       onSubmit={(ev)=>createSimulation(ev)}
       >
           <div>
@@ -588,6 +392,7 @@ function maxPrazos(ev){
         <button
         ref={btnRef}
         className={style.btn1}
+        onClick={createSimulation}
         >Simular</button>
       </form>
       <button
@@ -601,12 +406,11 @@ function maxPrazos(ev){
         <button
         ref={btnAtualizar}
         className={style.btn3}
-        onClick={clearTable}
         >
           Simular
         </button>
 
-        <div className={style.summary} ref={refResumo}>
+      <div className={style.summary} ref={refResumo}>
       <h1>Resumo do financiamento</h1>
       <h4>Valor Imovel: R$ {imovel}</h4>
       <h4>Valor Financiamento: R$ {financiamento}</h4>
@@ -626,39 +430,17 @@ function maxPrazos(ev){
       <h4>Valor CESH: (NÃO INFORMADO)</h4>
       <h4>Taxa Efetiva: {juros}</h4>
       <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
-    </div>
-  <div 
-  className={style.tableContainer}
-  ref={refTable}
-  >
-    <table ref={targetRef} className={style.table}>
-        <thead>
-          <tr className={style.header}>
-            <th>Parcelas</th>
-            <th>Juros</th>
-            <th>Amortizacao</th>
-            <th>Valor Parcela</th>
-            <th>Saldo devedor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className={style.content}>
-            <td ref={refParcela}></td>
-            <td ref={refJuros}></td>
-            <td ref={refAmortizacao}></td>
-            <td ref={refValorParcela}></td>
-            <td ref={refSaldo}></td>
-          </tr>
-        </tbody>
-    </table>
-    <button onClick={downloadPDF} className={style.btnPdf}>
+      <button className={style.btnPdf}>
     <Image
     alt='pdfBtn'
     src={pdfSvg}
     width={30}
+    onClick={()=>SimulationsPDF(simulations)}
     />
     </button> 
     </div>
+    
+  
 
    
     </main>

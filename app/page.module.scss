@@ -90,6 +90,7 @@
     }
 
     .summary{
+    position: relative;
     display: none;
     background-color: #FFF; 
     width: max-content;
@@ -107,6 +108,18 @@
     h4:nth-child(odd){
     background-color: #F9F9F9;
     
+    }
+
+    .btnPdf{
+      position: absolute;
+      bottom: 10px;
+      left: 442px;
+      background-color: transparent;
+      border: none;
+      z-index: 1000;
+      &:hover{
+        cursor: pointer;
+      }
     }
   }
 
@@ -134,56 +147,7 @@
     margin-top: -56px;
     margin-left: 180px;
     }
-  .tableContainer{
-    font-family: 'Collegiate';
-    display: none;
-    position: relative;
-    width: max-content;
-    font-size: 1.5rem;
-    color: #FFFFFF;
-   
-    .table{
-      width: 1200px;
-      background-color: #363636;
-      border: 2px solid #FFC800;
-      .header{
-        th{
-          background-color: #1B1B1B;
-          padding: 12px;
-          border: 2px solid #FFC800;
-        }
-        }
-      .content{
-        td{
-          background-color: #1B1B1B;
-          border: 2px solid #FFC800;
-          text-align: center;
-          padding: 8px;
-        }
-      } 
-      }
-      .btnPdf{
-        position: absolute;
-        top: -58px;
-        left: 442px;
-        background-color: transparent;
-        border: none;
-        &:hover{
-          cursor: pointer;
-        }
-      }
 
-      .btnClear{
-        position: absolute;
-        top: 12px;
-        right: 10px;
-        background-color: transparent;
-        border: none;
-        &:hover{
-          cursor: pointer;
-        }  
-      }
-    }
   }
 
   @media(max-width:500px){
