@@ -11,6 +11,7 @@ import SimulationsPDF from './Reports/Simulations/Simulations'
 export default function Home() {
   const simulations = []
   const saldoDevedor  = []
+  const parcelas = []
   const [imovel,setImovel] = useState('')
   const [despesas,setDespesas] = useState('')
   const [amortizacao,setAmortizacao] = useState('Selecione seu sistema de amortização')
@@ -125,7 +126,7 @@ function maxPrazos(ev){
   mensageBanco.current.innerText = ''
   }
   else if(target.value === 'bradesco'){
-    setJuros('12%')
+    setJuros('6%')
     mensageParcela.current.innerText = ''
     mensageJuros.current.innerText = ''
     mensageBanco.current.innerText = ''
@@ -210,9 +211,9 @@ function maxPrazos(ev){
       mensageAmortizacao.current.innerText = 'Selecione um sistema '
     }else if(despesas === ''){
       mensageDespesa.current.innerText = 'Selecione uma alternativa'
-    }else if(amortizacao === 'SAC' && banco === 'Bradesco'){
+    }else if(amortizacao === 'SAC' && banco=== 'bradesco'){
       const taxaBradesco = '10.49%'
-      
+
       taxano.current.innerText = `Taxa juros ano ${juros}`
       taxmes.current.innerText = `Taxa juros mes `
       btnLimpar.current.style.marginTop = '-56px'
@@ -240,11 +241,11 @@ function maxPrazos(ev){
       })
 
       const amort = Number(financiamento) / Number(prazo)
-   
+     
   
       for(let i = 1; i<=Number(prazo); i++){
         const parcela = (((5-[i]+1)*contaTaxa)+1)*amort
-        console.log()
+        parcelas.push(parcela)
         var simulation = {
         parcelas:`Parcela ${i}`,
         valorParcela: parcela.toFixed(2),
@@ -255,6 +256,7 @@ function maxPrazos(ev){
         }
         simulations.push(simulation)  
     }
+    console.log(parcelas)
     formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
     }
 
