@@ -47,6 +47,7 @@
   .main{
     padding: 20px;
     .form {
+     
       .errorSpan{
         display: block;
         font-size: 0.825rem;
@@ -70,6 +71,7 @@
           border-color: #FFFFFF;
         }
       }
+    
     label{
       color: #FFFFFF;
       font-family: 'Helvetica';
@@ -85,6 +87,11 @@
           display: block;
           margin: auto auto;
         }
+      }
+    }
+    .outputContainer{
+      input{
+        display: none;
       }
     }
     }

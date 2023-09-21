@@ -3,7 +3,6 @@ import pdfFonts from 'pdfmake/build/vfs_fonts'
 
 export default function SimulationsPDF(simulations){
   pdfMake.vfs = pdfFonts.pdfMake.vfs
-
   const reportTitle = [
     {
       text: 'Simulação',
@@ -35,6 +34,13 @@ export default function SimulationsPDF(simulations){
               {text: 'Amortização (A)', style:'tableHeader', fontSize:10},
               {text: 'Valor Parcela (VP)', style:'tableHeader', fontSize:10},
               {text: 'Saldo Devedor (SD)', style:'tableHeader', fontSize:10}
+            ],
+            [
+              {text: 'Parcela 0', fontSize:10},
+              {text: '0',fontSize:10},
+              {text: `0`,fontSize:10},
+              {text: '0',fontSize:10},
+              {text: `${simulations[0].financiado}`,fontSize:10}
             ],
            ...dados
         ]

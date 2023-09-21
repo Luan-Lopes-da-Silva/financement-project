@@ -34,9 +34,26 @@ export default function Home() {
   const mensageAmortizacao = useRef()
   const mensageDespesa = useRef()
   const formRef = useRef()
-  const taxano = useRef()
-  const taxmes = useRef()
+  const outputRef = useRef()
+  const valorDespesa = Number(imovel)*0.05
+  const conta = valorDespesa + Number(financiamento)
 
+  
+  function despesasFunction(ev){
+  const maxFinanciamento = imovel*0.080 
+  if(ev==='Sim' && conta>maxFinanciamento){
+    setDespesas(ev)
+    outputRef.current.style.display = 'block'
+    mensagePorcentagemFinanciamento.current.innerText = 'Porcentagem máxima de financiamento atingida abaixe o valor'
+  }else if(ev==='Sim' && conta<maxFinanciamento){
+    setDespesas(ev)
+    outputRef.current.style.display = 'block'
+    mensagePorcentagemFinanciamento.current.innerText = ''
+  }else{
+    setDespesas(ev)
+    outputRef.current.style.display = 'none'
+  }
+  }
   function checkIdade(ev){
     const nascimento = ev.currentTarget.value
     const nascimentoConvertido = new Date(nascimento).getFullYear()
@@ -109,7 +126,7 @@ function maxPrazos(ev){
     }
   }
 
-  function maxValue(ev){
+  function maxValue(ev){  
     const porcentagem = (ev.currentTarget.value/imovel) * 100 
     if(porcentagem>80){
     mensagePorcentagemFinanciamento.current.innerText = 'Porcentagem máxima de financiamento atingida abaixe o valor'
@@ -146,6 +163,7 @@ function maxPrazos(ev){
     setAniversario('')
     setAmortizacao('Selecione seu sistema de amortização')
     setDespesas('')
+    outputRef.current.style.display = 'none'
     refResumo.current.style.display = 'none'
   }
 
@@ -213,9 +231,6 @@ function maxPrazos(ev){
       mensageDespesa.current.innerText = 'Selecione uma alternativa'
     }else if(amortizacao === 'SAC' && banco=== 'bradesco'){
       const taxaBradesco = '10.49%'
-
-      taxano.current.innerText = `Taxa juros ano ${juros}`
-      taxmes.current.innerText = `Taxa juros mes `
       btnLimpar.current.style.marginTop = '-56px'
       btnLimpar.current.style.marginLeft = '200px'
       refResumo.current.style.display = 'block'
@@ -229,6 +244,7 @@ function maxPrazos(ev){
       mensageDespesa.current.innerText = ''
       const values = []
       values.push(Number(financiamento))
+      
       
     
       for(let i = 1; i<=Number(prazo); i++){
@@ -256,11 +272,57 @@ function maxPrazos(ev){
         }
         simulations.push(simulation)  
     }
-    console.log(parcelas)
+   
     formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
-    }
+  
+    }else if(amortizacao === 'PRICE' && banco=== 'bradesco'){
+      const taxaBradesco = '10.49%'
+      btnLimpar.current.style.marginTop = '-56px'
+      btnLimpar.current.style.marginLeft = '200px'
+      refResumo.current.style.display = 'block'
+      mensagePorcentagemFinanciamento.current.innerText = ''
+      mensageParcela.current.innerText = ''
+      mensageEntrada.current.innerText = ''
+      mensageBanco.current.innerText = ''
+      mensageAniversario.current.innerText = ''
+      mensageJuros.current.innerText = ''
+      mensageAmortizacao.current.innerText = ''
+      mensageDespesa.current.innerText = ''
+      const values = []
+      values.push(Number(financiamento))
+      
+    
+      for(let i = 1; i<=Number(prazo); i++){
+        values.push((Number(imovel) - Number(entrada)) / prazo)
+      }
 
+      
+
+      const result = values.reduce((acc,cur)=>{
+        saldoDevedor.push((acc-cur).toFixed(2))
+        return acc-cur
+      })
+      saldoDevedor.unshift(financiamento)
+      const amort = Number(financiamento) / Number(prazo)
+     
+  
+      for(let i = 1; i<=Number(prazo); i++){
+        const parcela = Number(financiamento)*(((1+contaTaxa)**Number(prazo))*contaTaxa)/((((1+contaTaxa)**prazo)-1))
+        parcelas.push(parcela)
+        var simulation = {
+        parcelas:`Parcela ${i}`,
+        valorParcela: parcela.toFixed(2),
+        juros: (saldoDevedor[i-1]*contaTaxa).toFixed(2),
+        financiado: financiamento,
+        amortizacao: (parcela - (saldoDevedor[i-1]*contaTaxa)).toFixed(2) ,
+        saldoDevedor: saldoDevedor[i]
+        }
+        simulations.push(simulation)  
+    }
+ 
+    formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
   }
+}
   
   return (
     <div className={style.container}>
@@ -378,7 +440,7 @@ function maxPrazos(ev){
             name="despesas"
             checked={despesas === 'Sim'}
             value={'Sim'}
-            onChange={()=>setDespesas('Sim')}
+            onChange={(ev)=>despesasFunction(ev.currentTarget.value)}
             />
           </div>
           <div className={style.radio}>
@@ -388,9 +450,17 @@ function maxPrazos(ev){
             name="despesas"
             checked={despesas === 'Não'}
             value={'Não'}
-            onChange={()=>setDespesas('Não')}
+            onChange={(ev)=>despesasFunction(ev.currentTarget.value)}
             />
           </div>
+        </div>
+        <div className={style.outputContainer}>
+          <input 
+          type="text" 
+          ref={outputRef} 
+          className={style.outputRef}
+          value={valorDespesa}
+          />
         </div>
         <button
         ref={btnRef}
@@ -405,26 +475,18 @@ function maxPrazos(ev){
         >
           Limpar
       </button>
-
-      <h4 ref={taxano}></h4>
-      <h4 ref = {taxmes}></h4>
-
+      {despesas === 'Sim'?(
       <div className={style.summary} ref={refResumo}>
-      <h1>Resumo do financiamento</h1>
-      <h4>Valor Imovel: R$ {imovel}</h4>
-      <h4>Valor Financiamento: R$ {financiamento}</h4>
-      <h4>Valor Entrada: R$ {entrada}</h4>
-      <h4>Renda Minima: (NÃO INFORMADO)</h4>
-      <h4>Despesas: (NÃO INFORMADO)</h4>
-      {banco === 'bradesco'?(
-       <h4>Vistoria: R$ 2.114,03</h4>
-      ):(
-       <h4>Vistoria: R$ 0,00</h4>
-      )}
-      <h4>Valor Total Financiado: (NÃO INFORMADO)</h4>
-      <h4>Prazo: {prazo}</h4>
-      <h4>Primeira Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
-      <h4>Ultima Parcela: R$ {Number(financiamento/prazo).toFixed(2)}</h4>
+        <h1>Resumo do financiamento</h1>
+        <h4>Valor Imovel: R$ {imovel}</h4>
+        <h4>Valor Financiamento: R$ {financiamento}</h4>
+        <h4>Valor Entrada: R$ {entrada}</h4>
+        <h4>Renda Minima: (NÃO INFORMADO)</h4>
+        <h4>Despesas: R$ {Number(valorDespesa).toFixed(2)}</h4>
+        <h4>Vistoria: R$ 2.114,03</h4>
+        <h4>Valor Total Financiado: R$ {Number(conta).toFixed(2)}</h4>
+      <h4>Prazo: {prazo} meses</h4>
+      
       <h4>Valor CET: (NÃO INFORMADO)</h4>
       <h4>Valor CESH: (NÃO INFORMADO)</h4>
       <h4>Taxa Efetiva: {juros}</h4>
@@ -437,7 +499,37 @@ function maxPrazos(ev){
     onClick={()=>SimulationsPDF(simulations)}
     />
     </button> 
-    </div>
+      </div>
+      ):(
+      <div className={style.summary} ref={refResumo}>
+      <h1>Resumo do financiamento</h1>
+      <h4>Valor Imovel: R$ {imovel}</h4>
+      <h4>Valor Financiamento: R$ {financiamento}</h4>
+      <h4>Valor Entrada: R$ {entrada}</h4>
+      <h4>Renda Minima: (NÃO INFORMADO)</h4>
+      <h4>Despesas: (NÃO INFORMADO)</h4>
+      <h4>Vistoria: R$ 2.114,03</h4>
+      <h4>Valor Total Financiado: R$ {Number(financiamento).toFixed(2)}</h4>
+      <h4>Prazo: {prazo} meses</h4>
+      
+      <h4>Valor CET: (NÃO INFORMADO)</h4>
+      <h4>Valor CESH: (NÃO INFORMADO)</h4>
+      <h4>Taxa Efetiva: {juros}</h4>
+      <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
+      <button className={style.btnPdf}>
+      <Image
+      alt='pdfBtn'
+      src={pdfSvg}
+      width={30}
+      onClick={()=>SimulationsPDF(simulations)}
+      />
+      </button> 
+      </div>
+      )}
+    
+
+   
+
     
   
 
