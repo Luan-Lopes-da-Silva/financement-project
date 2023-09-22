@@ -39,7 +39,7 @@ export default function Home() {
   const conta = valorDespesa + Number(financiamento)
   const inputRef = useRef()
   const [active,setActive] = useState('') 
-
+  const localStorage = window.localStorage
   
   function despesasFunction(ev){
   const maxFinanciamento = imovel*0.080 
