@@ -39,7 +39,8 @@ export default function Home() {
   const conta = valorDespesa + Number(financiamento)
   const inputRef = useRef()
   const [active,setActive] = useState('') 
-  const localStorage = window.localStorage
+  const [primeiraParcela,setPrimeiraParcela] = useState()
+  const [ultimaParcela,setUltimaParcela] = useState()
   
   function despesasFunction(ev){
   const maxFinanciamento = imovel*0.080 
@@ -274,8 +275,8 @@ function maxPrazos(ev){
         }
         simulations.push(simulation)   
     }
-    localStorage.setItem('primeiraParcela', Number(parcelas[0]).toFixed(2))
-    localStorage.setItem('ultimaParcela', Number(parcelas[parcelas.length-1]).toFixed(2))
+    setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
+    setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
     }else if(amortizacao === 'PRICE' && banco=== 'bradesco'){
       setActive(true)
       const taxaBradesco = '10.49%'
@@ -321,8 +322,8 @@ function maxPrazos(ev){
         }
         simulations.push(simulation)  
     }
-    localStorage.setItem('primeiraParcela', Number(parcelas[0]).toFixed(2))
-    localStorage.setItem('ultimaParcela', Number(parcelas[parcelas.length-1]).toFixed(2))
+    setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
+    setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
   }
 }
   
@@ -478,7 +479,6 @@ function maxPrazos(ev){
         >
           Limpar
       </button>
-      <span>teste</span>
       {active === true?(
       <div className={style.summary} ref={refResumo}>
         <h1>Resumo do financiamento</h1>
@@ -494,8 +494,8 @@ function maxPrazos(ev){
         <h4>Vistoria: R$ 2.114,03</h4>
         <h4>Valor Total Financiado: R$ {Number(conta).toFixed(2)}</h4>
         <h4>Prazo: {prazo} meses</h4>
-        <h4>Primeira Parcela: R$ {localStorage.getItem('primeiraParcela')}</h4>
-        <h4>Ultima Parcela: R$ {localStorage.getItem('ultimaParcela')}</h4>
+        <h4>Primeira Parcela: R$ {primeiraParcela}</h4>
+        <h4>Ultima Parcela: R$ {ultimaParcela}</h4>
         <h4>Valor CET: (NÃO INFORMADO)</h4> 
         <h4>Valor CESH: (NÃO INFORMADO)</h4> 
         <h4>Taxa Efetiva: {juros}</h4> 
@@ -524,8 +524,8 @@ function maxPrazos(ev){
       <h4>Vistoria: R$ 2.114,03</h4>
       <h4>Valor Total Financiado: R$ {Number(financiamento).toFixed(2)}</h4>
       <h4>Prazo: {prazo} meses</h4>
-      <h4>Primeira Parcela: R$ {localStorage.getItem('primeiraParcela')}</h4>
-      <h4>Ultima Parcela: R$ {localStorage.getItem('ultimaParcela')}</h4>
+      <h4>Primeira Parcela: R$ {primeiraParcela}</h4>
+      <h4>Ultima Parcela: R$ {ultimaParcela}</h4>
       <h4>Valor CET: (NÃO INFORMADO)</h4>
       <h4>Valor CESH: (NÃO INFORMADO)</h4>
       <h4>Taxa Efetiva: {juros}</h4>
