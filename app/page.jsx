@@ -37,6 +37,8 @@ export default function Home() {
   const outputRef = useRef()
   const valorDespesa = Number(imovel)*0.05
   const conta = valorDespesa + Number(financiamento)
+  const inputRef = useRef()
+  const [active,setActive] = useState('') 
 
   
   function despesasFunction(ev){
@@ -49,6 +51,7 @@ export default function Home() {
     setDespesas(ev)
     outputRef.current.style.display = 'block'
     mensagePorcentagemFinanciamento.current.innerText = ''
+    inputRef.current.focus()
   }else{
     setDespesas(ev)
     outputRef.current.style.display = 'none'
@@ -230,6 +233,7 @@ function maxPrazos(ev){
     }else if(despesas === ''){
       mensageDespesa.current.innerText = 'Selecione uma alternativa'
     }else if(amortizacao === 'SAC' && banco=== 'bradesco'){
+      setActive(false)
       const taxaBradesco = '10.49%'
       btnLimpar.current.style.marginTop = '-56px'
       btnLimpar.current.style.marginLeft = '200px'
@@ -245,10 +249,8 @@ function maxPrazos(ev){
       const values = []
       values.push(Number(financiamento))
       
-      
-    
       for(let i = 1; i<=Number(prazo); i++){
-        values.push((Number(imovel) - Number(entrada)) / prazo)
+        values.push(financiamento / prazo)
       }
 
       const result = values.reduce((acc,cur)=>{
@@ -270,12 +272,12 @@ function maxPrazos(ev){
         amortizacao: amort.toFixed(2),
         saldoDevedor: saldoDevedor[i-1]
         }
-        simulations.push(simulation)  
+        simulations.push(simulation)   
     }
-   
-    formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
-  
+    localStorage.setItem('primeiraParcela', Number(parcelas[0]).toFixed(2))
+    localStorage.setItem('ultimaParcela', Number(parcelas[parcelas.length-1]).toFixed(2))
     }else if(amortizacao === 'PRICE' && banco=== 'bradesco'){
+      setActive(true)
       const taxaBradesco = '10.49%'
       btnLimpar.current.style.marginTop = '-56px'
       btnLimpar.current.style.marginLeft = '200px'
@@ -293,7 +295,7 @@ function maxPrazos(ev){
       
     
       for(let i = 1; i<=Number(prazo); i++){
-        values.push((Number(imovel) - Number(entrada)) / prazo)
+        values.push(financiamento / prazo)
       }
 
       
@@ -319,8 +321,8 @@ function maxPrazos(ev){
         }
         simulations.push(simulation)  
     }
- 
-    formRef.current.addEventListener('onSubmit',(ev)=>SimulationsPDF(ev,simulations))
+    localStorage.setItem('primeiraParcela', Number(parcelas[0]).toFixed(2))
+    localStorage.setItem('ultimaParcela', Number(parcelas[parcelas.length-1]).toFixed(2))
   }
 }
   
@@ -383,6 +385,7 @@ function maxPrazos(ev){
           value={financiamento}
           onChange={(ev)=>setFinanciamento(ev.currentTarget.value)}
           onKeyUp={(ev)=>maxValue(ev)}
+          ref={inputRef}
           />
         </div>
         <div>
@@ -475,23 +478,28 @@ function maxPrazos(ev){
         >
           Limpar
       </button>
-      {despesas === 'Sim'?(
+      {active === true?(
       <div className={style.summary} ref={refResumo}>
         <h1>Resumo do financiamento</h1>
         <h4>Valor Imovel: R$ {imovel}</h4>
         <h4>Valor Financiamento: R$ {financiamento}</h4>
         <h4>Valor Entrada: R$ {entrada}</h4>
         <h4>Renda Minima: (NÃO INFORMADO)</h4>
-        <h4>Despesas: R$ {Number(valorDespesa).toFixed(2)}</h4>
+        {despesas === 'Sim'?(
+          <h4>Despesas: R$ {Number(valorDespesa).toFixed(2)}</h4>
+        ):(
+          <h4>Despesas: (NÃO INFORMADO)</h4>
+        )}
         <h4>Vistoria: R$ 2.114,03</h4>
         <h4>Valor Total Financiado: R$ {Number(conta).toFixed(2)}</h4>
-      <h4>Prazo: {prazo} meses</h4>
-      
-      <h4>Valor CET: (NÃO INFORMADO)</h4>
-      <h4>Valor CESH: (NÃO INFORMADO)</h4>
-      <h4>Taxa Efetiva: {juros}</h4>
-      <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
-      <button className={style.btnPdf}>
+        <h4>Prazo: {prazo} meses</h4>
+        <h4>Primeira Parcela: R$ {localStorage.getItem('primeiraParcela')}</h4>
+        <h4>Ultima Parcela: R$ {localStorage.getItem('ultimaParcela')}</h4>
+        <h4>Valor CET: (NÃO INFORMADO)</h4> 
+        <h4>Valor CESH: (NÃO INFORMADO)</h4> 
+        <h4>Taxa Efetiva: {juros}</h4> 
+        <h4>Taxa Nominal: (NÃO INFORMADO)</h4> 
+        <button className={style.btnPdf}>
     <Image
     alt='pdfBtn'
     src={pdfSvg}
@@ -507,11 +515,16 @@ function maxPrazos(ev){
       <h4>Valor Financiamento: R$ {financiamento}</h4>
       <h4>Valor Entrada: R$ {entrada}</h4>
       <h4>Renda Minima: (NÃO INFORMADO)</h4>
-      <h4>Despesas: (NÃO INFORMADO)</h4>
+      {despesas === 'Sim'?(
+          <h4>Despesas: R$ {Number(valorDespesa).toFixed(2)}</h4>
+      ):(
+          <h4>Despesas: (NÃO INFORMADO)</h4>
+      )}
       <h4>Vistoria: R$ 2.114,03</h4>
       <h4>Valor Total Financiado: R$ {Number(financiamento).toFixed(2)}</h4>
       <h4>Prazo: {prazo} meses</h4>
-      
+      <h4>Primeira Parcela: R$ {localStorage.getItem('primeiraParcela')}</h4>
+      <h4>Ultima Parcela: R$ {localStorage.getItem('ultimaParcela')}</h4>
       <h4>Valor CET: (NÃO INFORMADO)</h4>
       <h4>Valor CESH: (NÃO INFORMADO)</h4>
       <h4>Taxa Efetiva: {juros}</h4>
@@ -526,14 +539,6 @@ function maxPrazos(ev){
       </button> 
       </div>
       )}
-    
-
-   
-
-    
-  
-
-   
     </main>
     </div>
   )
