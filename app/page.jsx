@@ -478,6 +478,7 @@ function maxPrazos(ev){
         >
           Limpar
       </button>
+      <span>teste</span>
       {active === true?(
       <div className={style.summary} ref={refResumo}>
         <h1>Resumo do financiamento</h1>
