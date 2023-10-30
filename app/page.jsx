@@ -1,46 +1,24 @@
 'use client'
-import { useRef, useState } from 'react'
-import html2canvas from 'html2canvas'
-import jsPDF from 'jspdf'
 import style from './page.module.scss'
 import pdfSvg from './src/assets/pdf-svgrepo-com.svg'
-import autoTable from 'jspdf-autotable'
 import Image from 'next/image'
 import SimulationsPDF from './Reports/Simulations/Simulations'
+import useForm1 from './src/Hooks/useStates'
+import useForm2 from './src/Hooks/useStates2'
+import useRefs from './src/Hooks/useRefs'
+import { useRef } from 'react'
+let simulationsArray = []
 
 export default function Home() {
-  const simulations = []
+ 
   const saldoDevedor  = []
   const parcelas = []
-  const [imovel,setImovel] = useState('')
-  const [despesas,setDespesas] = useState('')
-  const [amortizacao,setAmortizacao] = useState('Selecione seu sistema de amortização')
-  const [aniversario,setAniversario] = useState('')
-  const [banco,setBanco] = useState('Selecione um banco')
-  const [financiamento,setFinanciamento] = useState('')
-  const [entrada,setEntrada] = useState('')
-  const [prazo,setPrazo] = useState('')
-  const [juros,setJuros] = useState('')
-  const refResumo = useRef(null)
-  const mensage = useRef()
-  const mensagePorcentagemFinanciamento = useRef()
-  const mensageEntrada = useRef()
-  const mensageParcela = useRef()
-  const mensageBanco = useRef()
-  const mensageJuros = useRef()
-  const btnRef = useRef()
-  const btnLimpar = useRef()
-  const mensageAniversario = useRef()
-  const mensageAmortizacao = useRef()
-  const mensageDespesa = useRef()
-  const formRef = useRef()
-  const outputRef = useRef()
+  const {imovel,setImovel,despesas,setDespesas,amortizacao,setAmortizacao,aniversario,setAniversario,banco,setBanco,financiamento,setFinanciamento} = useForm1()
+  const {entrada,setEntrada,prazo,setPrazo,juros,setJuros,active,setActive,primeiraParcela,setPrimeiraParcela,ultimaParcela,setUltimaParcela} = useForm2()
+  const {btnLimpar,btnRef,formRef,inputRef,mensage,mensageAmortizacao,mensageAniversario,mensageBanco,mensageDespesa,mensageEntrada,mensageJuros,mensageParcela,mensagePorcentagemFinanciamento,outputRef,refResumo} = useRefs()
   const valorDespesa = Number(imovel)*0.05
   const conta = valorDespesa + Number(financiamento)
-  const inputRef = useRef()
-  const [active,setActive] = useState('') 
-  const [primeiraParcela,setPrimeiraParcela] = useState()
-  const [ultimaParcela,setUltimaParcela] = useState()
+  
   
   function despesasFunction(ev){
   const maxFinanciamento = imovel*0.080 
@@ -56,8 +34,10 @@ export default function Home() {
   }else{
     setDespesas(ev)
     outputRef.current.style.display = 'none'
+    mensagePorcentagemFinanciamento.current.innerText = ''
   }
   }
+  
   function checkIdade(ev){
     const nascimento = ev.currentTarget.value
     const nascimentoConvertido = new Date(nascimento).getFullYear()
@@ -167,6 +147,7 @@ function maxPrazos(ev){
     setAniversario('')
     setAmortizacao('Selecione seu sistema de amortização')
     setDespesas('')
+    simulationsArray = []
     outputRef.current.style.display = 'none'
     refResumo.current.style.display = 'none'
   }
@@ -273,7 +254,7 @@ function maxPrazos(ev){
         amortizacao: amort.toFixed(2),
         saldoDevedor: saldoDevedor[i-1]
         }
-        simulations.push(simulation)   
+        simulationsArray.push(simulation)   
     }
     setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
     setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
@@ -299,7 +280,6 @@ function maxPrazos(ev){
         values.push(financiamento / prazo)
       }
 
-      
 
       const result = values.reduce((acc,cur)=>{
         saldoDevedor.push((acc-cur).toFixed(2))
@@ -320,8 +300,10 @@ function maxPrazos(ev){
         amortizacao: (parcela - (saldoDevedor[i-1]*contaTaxa)).toFixed(2) ,
         saldoDevedor: saldoDevedor[i]
         }
-        simulations.push(simulation)  
-    }
+        simulationsArray.push(simulation)  
+      }
+
+      console.log(simulationsArray)
     setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
     setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
   }
@@ -458,10 +440,10 @@ function maxPrazos(ev){
             />
           </div>
         </div>
-        <div className={style.outputContainer}>
+        <div className={style.outputContainer} ref={outputRef}>
+          <label htmlFor="despesas">Despesas</label>
           <input 
           type="text" 
-          ref={outputRef} 
           className={style.outputRef}
           value={valorDespesa}
           />
@@ -479,6 +461,7 @@ function maxPrazos(ev){
         >
           Limpar
       </button>
+
       {active === true?(
       <div className={style.summary} ref={refResumo}>
         <h1>Resumo do financiamento</h1>
@@ -505,10 +488,10 @@ function maxPrazos(ev){
     alt='pdfBtn'
     src={pdfSvg}
     width={30}
-    onClick={()=>SimulationsPDF(simulations)}
+    onClick={()=>SimulationsPDF(simulationsArray)}
     />
     </button> 
-      </div>
+    </div>
       ):(
       <div className={style.summary} ref={refResumo}>
       <h1>Resumo do financiamento</h1>
@@ -530,14 +513,17 @@ function maxPrazos(ev){
       <h4>Valor CESH: (NÃO INFORMADO)</h4>
       <h4>Taxa Efetiva: {juros}</h4>
       <h4>Taxa Nominal: (NÃO INFORMADO)</h4>
-      <button className={style.btnPdf}>
+      <button 
+      className={style.btnPdf}
+      onClick={()=>SimulationsPDF(simulationsArray)}
+      >
       <Image
       alt='pdfBtn'
       src={pdfSvg}
       width={30}
-      onClick={()=>SimulationsPDF(simulations)}
       />
       </button> 
+     
       </div>
       )}
     </main>
