@@ -176,6 +176,10 @@ function maxPrazos(ev){
   return hexAleatorio
   }
 
+  function criarProcesso(){
+
+  }
+
   function createSimulation(ev){
     ev.preventDefault()
     const jurosConvertido = juros.replace(/%/g,'')
@@ -331,6 +335,14 @@ function maxPrazos(ev){
       refProtocolo.current.style.display = 'block'
       const protocoloAleatorio = gerarHexAleatorio()
       setProtocolo(protocoloAleatorio)
+
+      const processo = {
+        parcelas: prazo,
+        financiado: financiamento,
+        protocolo: protocoloAleatorio
+      }
+
+      localStorage.setItem('processo' , JSON.stringify(processo))
   }
 }
   
