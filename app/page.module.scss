@@ -46,8 +46,50 @@
   }
   .main{
     padding: 20px;
+    position: relative;
+    .modal{
+      background-color: #D9D9D9;
+      width: 600px;
+      height: 300px;
+      line-height: 1.5;
+      padding: 20px;
+      position: absolute;
+      top: 20%;
+      left: 35%;
+      z-index: 5000;
+      display: none;
+      p{
+        margin-top: 60px;
+      }
+      h1{
+        position: absolute;
+        left: 90%;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+
+      h2,
+      h3,
+      span{
+        text-align: center;
+      }
+
+      h2{
+        margin-top: 40px;
+        margin-bottom: 20px;
+      }
+
+      span{
+      display: block;
+      opacity: 0.8;
+      width: 350px;
+      margin: auto auto;
+      margin-bottom: 20px;
+      word-wrap: break-word;
+      }
+    }
     .form {
-     
       .errorSpan{
         display: block;
         font-size: 0.825rem;
@@ -91,6 +133,28 @@
     }
     .outputContainer{
      display: none;
+    }
+
+    .interrogationContainer{
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 20px;
+
+      .interrogation{
+        background-color: #457b9d;
+        padding: 2px;
+        width: 16px;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 0.525rem;
+        p{
+          font-weight: bold;
+         &:hover{
+          cursor: pointer;
+         } 
+        }
+      }
     }
     }
 

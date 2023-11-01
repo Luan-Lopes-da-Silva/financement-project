@@ -10,14 +10,15 @@ import { useRef } from 'react'
 let simulationsArray = []
 
 export default function Home() {
- 
   const saldoDevedor  = []
   const parcelas = []
   const {imovel,setImovel,despesas,setDespesas,amortizacao,setAmortizacao,aniversario,setAniversario,banco,setBanco,financiamento,setFinanciamento} = useForm1()
-  const {entrada,setEntrada,prazo,setPrazo,juros,setJuros,active,setActive,primeiraParcela,setPrimeiraParcela,ultimaParcela,setUltimaParcela} = useForm2()
+  const {entrada,setEntrada,prazo,setPrazo,juros,setJuros,active,setActive,primeiraParcela,setPrimeiraParcela,ultimaParcela,setUltimaParcela,consultor,setConsultor,protocolo,setProtocolo} = useForm2()
   const {btnLimpar,btnRef,formRef,inputRef,mensage,mensageAmortizacao,mensageAniversario,mensageBanco,mensageDespesa,mensageEntrada,mensageJuros,mensageParcela,mensagePorcentagemFinanciamento,outputRef,refResumo} = useRefs()
   const valorDespesa = Number(imovel)*0.05
   const conta = valorDespesa + Number(financiamento)
+  const refModal = useRef()
+  const refProtocolo = useRef()
   
   
   function despesasFunction(ev){
@@ -110,6 +111,18 @@ function maxPrazos(ev){
     }
   }
 
+  function openModal(){
+  refModal.current.style.display = 'block'  
+  }
+  
+  function closeModal(){
+  refModal.current.style.display = 'none'  
+  }
+ 
+  function closeProtocolModal(){
+  refProtocolo.current.style.display = 'none'  
+  }
+
   function maxValue(ev){  
     const porcentagem = (ev.currentTarget.value/imovel) * 100 
     if(porcentagem>80){
@@ -150,6 +163,17 @@ function maxPrazos(ev){
     simulationsArray = []
     outputRef.current.style.display = 'none'
     refResumo.current.style.display = 'none'
+  }
+
+  function gerarHexAleatorio(){
+  const caracteresHex = '0123456789ABCDEFGHIJKLMNOPRSTUVWXYZ'
+  let hexAleatorio = '#'
+
+  for (let i = 0; i<72; i++){
+    const indiceAleatorio = Math.floor(Math.random()* caracteresHex.length)
+    hexAleatorio += caracteresHex.charAt(indiceAleatorio)
+  }
+  return hexAleatorio
   }
 
   function createSimulation(ev){
@@ -258,7 +282,7 @@ function maxPrazos(ev){
     }
     setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
     setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
-    }else if(amortizacao === 'PRICE' && banco=== 'bradesco'){
+    }else if(amortizacao === 'PRICE' && banco=== 'bradesco' && consultor==='Sim'){
       setActive(true)
       const taxaBradesco = '10.49%'
       btnLimpar.current.style.marginTop = '-56px'
@@ -302,10 +326,11 @@ function maxPrazos(ev){
         }
         simulationsArray.push(simulation)  
       }
-
-      console.log(simulationsArray)
-    setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
-    setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
+      setPrimeiraParcela(Number(parcelas[0]).toFixed(2))
+      setUltimaParcela(Number(parcelas[parcelas.length-1]).toFixed(2))
+      refProtocolo.current.style.display = 'block'
+      const protocoloAleatorio = gerarHexAleatorio()
+      setProtocolo(protocoloAleatorio)
   }
 }
   
@@ -322,6 +347,40 @@ function maxPrazos(ev){
       </nav>
     </header>
     <main className={style.main}>
+      <div className={style.modal} ref={refModal}>
+        <h1
+        onClick={closeModal}
+        >
+        X
+        </h1>
+        <p>
+        Caso aceite ser contatado por um consultor daremos
+        inicio ao processo de financiamento do seu tão sonha
+        do imovel sera gerado um numero de protocolo que 
+        podera ser usado por voce nosso cliente para que 
+        acompanhe todo o processo e em que fase do finan
+        ciamento voce esta com esse numero de protocolo
+        voce tambem tera acesso a dados do nosso consultor
+        designado para que voce possa tirar duvidas via email
+        ou whatsapp.
+        </p>
+      </div>
+
+      <div className={style.modal} ref={refProtocolo}>
+        <h1
+        onClick={closeProtocolModal}
+        >
+        X
+        </h1>
+        <h2>
+        O seu numero de protocolo é 
+        </h2>
+        <span>
+        {protocolo}
+        </span>
+        <h3>Guarde esse numero para poder checar o andamento de seu processo 
+        ou ter mais informações sobre o mesmo</h3>
+      </div>
       <form 
       className={style.form}
       ref={formRef}
@@ -448,6 +507,26 @@ function maxPrazos(ev){
           value={valorDespesa}
           />
         </div>
+
+        <div className={style.interrogationContainer}>
+        <input 
+        type="checkbox" 
+        name="consultor" 
+        id="consultor"
+        value={consultor}
+        onChange={()=>setConsultor('Sim')}
+        />
+        <label htmlFor="consultor">Deseja ser contatado por um de nossos consultores ?
+        </label>
+        <div className={style.interrogation}>
+        <p
+        onClick={openModal}
+        >
+        ?
+        </p>
+        </div>
+        </div>
+
         <button
         ref={btnRef}
         className={style.btn1}
