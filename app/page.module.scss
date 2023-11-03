@@ -218,52 +218,213 @@
     }
 
   }
+}
 
-  @media(max-width:500px){
-    .container{
-      padding-bottom: 60px;
-      header{
-        h1{
-          font-size: 2rem;
-        }
-        nav{
-          ul{
-            li{
-              font-size: 1rem;
+@media(max-width:500px){
+  .container{
+    background-color:#1B1B1B;
+    padding-bottom: 40px;
+    height: max-content;
+    header{
+      display: flex;
+      padding: 20px;
+      align-items: center;
+      justify-content: space-between;
+      h1{
+        color: #FFC800;
+        font-size: 3rem;
+      }
+      nav{
+        ul{
+          list-style: none;
+          display: flex;
+          gap: 12px;
+         
+          li{
+            color: #FFFFFF;
+            font-size: 0.825rem;
+            &:hover{
+              text-decoration: underline;
+              cursor: pointer;
             }
           }
         }
       }
-      .main{
-        .form{
-          input{
-            width: 200px;
-          }
-        }
-        .tableContainer{
-          margin-left: -20px;
-          font-size: 1rem;
-          .table{
+    }
+    .main{
+      padding: 20px;
+      position: relative;
+      .modal{
+        background-color: #D9D9D9;
+        width: 350px;
+        height: 400px;
+        line-height: 1.5;
+        padding: 20px;
+        position: absolute;
+        top: 18%;
+        left: 5%;
+        z-index: 5000;
+        display: none;
+        p{
           margin-top: 60px;
-        
-          }
-          button{
-            right: 992px;
-            top: -60px;
-            font-family: 'Montserrat';
-            
-            &::after{
-              content: 'Baixar PDF';
-              display: inline-block;
-              width: 300px;
-              height:20px ;
-              margin-bottom: 20px;
+        }
+        h1{
+          position: absolute;
+          left: 90%;
+          &:hover{
+            cursor: pointer;
           }
         }
+  
+        h2,
+        h3,
+        span{
+          text-align: center;
+        }
+  
+        h2{
+          margin-top: 40px;
+          margin-bottom: 20px;
+        }
+  
+        span{
+        display: block;
+        opacity: 0.8;
+        width: 300px;
+        margin: auto auto;
+        margin-bottom: 20px;
+        word-wrap: break-word;
+        }
+      }
+      .form {
+        .errorSpan{
+          display: block;
+          font-size: 0.825rem;
+          margin: 4px 0px;
+          font-weight: bold;
+          color: #d90429;
+          font-family: 'Montserrat';
+        }
+        input[type = text],select,input[type = date]{
+          display: block;
+          margin: 4px 0px 20px 0px ;
+          width: 300px;
+          padding: 6px 8px;
+          background-color: #2C2C2C;
+          border-radius: 8px;
+          border: 2px solid #3D3D3D;
+          outline: none;
+          color: #FFFFFF;
+          &:focus{
+            color: #FFFFFF;
+            border-color: #FFFFFF;
+          }
+        }
+      
+      label{
+        color: #FFFFFF;
+        font-family: 'Helvetica';
+      }
+      .radioContainer{
+        display: flex;
+        margin-bottom: 20px;
+        .radio{
+          margin-top: 12px;
+          margin-right: 12px;
+          width: max-content;
+          input{
+            display: block;
+            margin: auto auto;
+          }
+        }
+      }
+      .outputContainer{
+       display: none;
+      }
+  
+      .interrogationContainer{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+  
+        .interrogation{
+          background-color: #457b9d;
+          padding: 2px;
+          width: 16px;
+          border-radius: 50%;
+          text-align: center;
+          font-size: 0.525rem;
+          p{
+            font-weight: bold;
+           &:hover{
+            cursor: pointer;
+           } 
+          }
+        }
+      }
+      }
+  
+      .summary{
+      position: relative;
+      display: none;
+      background-color: #FFF; 
+      width: max-content;
+      padding: 32px;
+      border: 2px solid #000; 
+      margin-bottom: 12px;
+      h1{
+        font-size: 1.3rem;
+        margin-bottom: 12px;
        
       }
+      h4{
+        padding: 4px;
+        border: 2px solid #F9F9F9;
       }
+      h4:nth-child(odd){
+      background-color: #F9F9F9;
       
-  }
+      }
+  
+      .btnPdf{
+        position: absolute;
+        bottom: -4px;
+        left: 310px;
+        border: none;
+        z-index: 1000;
+        padding: 6px;
+        &:hover{
+          cursor: pointer;
+        }
+      }
+    }
+  
+    .btn1,.btn2,.btn3{
+      padding: 8px 48px;
+      border-radius: 8px;
+      background-color: #222222;
+      color: #FFC800;
+      text-transform: uppercase;
+      border: 2px solid #363636;
+      margin-bottom: 20px;
+      font-family: 'Montserrat';
+      margin-right: 12px;
+      &:hover{
+      cursor: pointer;
+      }
+      }
+  
+      .btn3{
+      display: none;
+      }
+  
+      .btn2{
+      position: absolute;
+      margin-top: -56px;
+      margin-left: 180px;
+      }
+  
+    }
 }
 }

@@ -176,9 +176,6 @@ function maxPrazos(ev){
   return hexAleatorio
   }
 
-  function criarProcesso(){
-
-  }
 
   function createSimulation(ev){
     ev.preventDefault()
