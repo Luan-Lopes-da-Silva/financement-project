@@ -177,7 +177,7 @@ function maxPrazos(ev){
   }
 
 
-  function createSimulation(ev){
+  async function createSimulation(ev){
     ev.preventDefault()
     const jurosConvertido = juros.replace(/%/g,'')
     const taxaConta = 1/12
@@ -333,13 +333,14 @@ function maxPrazos(ev){
       const protocoloAleatorio = gerarHexAleatorio()
       setProtocolo(protocoloAleatorio)
 
-      const processo = {
-        parcelas: prazo,
-        financiado: financiamento,
-        protocolo: protocoloAleatorio
-      }
 
-      localStorage.setItem('processo' , JSON.stringify(processo))
+      const response = await fetch("http://localhost:3000/operations",{
+        method: "POST",
+        body: JSON.stringify({parcelas,financiamento,protocoloAleatorio}),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
   }
 }
   

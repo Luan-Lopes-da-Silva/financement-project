@@ -10,24 +10,23 @@ const protocoloRef = useRef()
 const errorMessage = useRef()
 const cardRef = useRef()
 
-  function pesquisarProtocolo(ev){
-    const protocoloLocal = JSON.parse(localStorage.getItem('processo'))
-    if(protocoloLocal.protocolo === ev){
-      errorMessage.current.innerText =  ''
-      parcelasRef.current.innerText = `Numero de Parcelas: ${protocoloLocal.parcelas}`
-      financiadoRef.current.innerText = `Financiado: R$ ${protocoloLocal.financiado},00`
-      protocoloRef.current.innerText = `Numero de Protocolo: ${protocoloLocal.protocolo.replace(/\w{64}$/m,'...')}`
-      cardRef.current.style.display = 'flex'
-    }else{
-      errorMessage.current.innerText =  'Processo não encontrado'
-      parcelasRef.current.innerText = ''
-      financiadoRef.current.innerText = ''
-      protocoloRef.current.innerText = ''
-      cardRef.current.style.display = 'none'
-
-    }
+  async function pesquisarProtocolo(ev){
+    const operations = await fetch("http://localhost:3000/operations").then((res)=>res.json());
+    const matchOperation = operations.filter(operation => operation.protocoloAleatorio === ev)
     
+    if(matchOperation.length === 0){
+      cardRef.current.style.display = 'none'
+      errorMessage.current.innerText = 'Numero de protocolo não encontrado'
+    }
+    else{
+      cardRef.current.style.display = 'block'
+      errorMessage.current.innerText = ''
+      parcelasRef.current.innerText = `Parcelas: ${matchOperation[0].parcelas.length}`
+      financiadoRef.current.innerText = `Financiado: ${matchOperation[0].financiamento}`
+      protocoloRef.current.innerText = `Numero de protocolo: ${matchOperation[0].protocoloAleatorio.replace(/\w{66}$/m,'...')}`
+    }
   }
+
   return(
     <div className={style.container}>
     <header>
