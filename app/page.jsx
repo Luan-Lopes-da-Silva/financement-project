@@ -334,7 +334,7 @@ function maxPrazos(ev){
       setProtocolo(protocoloAleatorio)
 
 
-      const response = await fetch("http://localhost:3000/operations",{
+      const response = await fetch("https://json-server-two-zeta.vercel.app/operations",{
         method: "POST",
         body: JSON.stringify({parcelas,financiamento,protocoloAleatorio}),
         headers: {
